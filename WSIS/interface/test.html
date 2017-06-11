@@ -4,7 +4,7 @@
 body { font: 12px Arial;}
 path{ 
     
-    stroke-width: 2;
+    stroke-width: 5;
     fill: none;
 }
 .axis path,
@@ -19,13 +19,32 @@ path{
 
 <!-- load the d3.js library -->    
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 <script>
 
-  function refresh(){
+  function refresh(disease,TF){
                 // Set the dimensions of the canvas / graph
 
 
+                var filename = "";
+
+                if(disease == 0 && TF == 0){
+                  filename = "Fast Food/Fastfood - 5 y.csv";
+                }else if(disease == 0 && TF == 1){
+                  filename = "Fast Food/Fastfood - 1 y.csv";
+                }else if(disease == 0 && TF == 2){
+                  filename = "Fast Food/Fastfood - 3 m.csv";
+                }else if(disease == 1 && TF == 0){
+                  filename = "Cancer/Treatment of Cancer - 5 y.csv";
+                }else if(disease == 1 && TF == 1){
+                  filename = "Cancer/Treatment of Cancer - 1 y.csv";
+                }else if(disease == 1 && TF == 2){
+                  filename = "Cancer/Treatment of Cancer - 3 m.csv";
+                }
+
+
+                $("body").html('<button onclick="refresh(0,0)"> 1</button><button onclick="refresh(0,1)"> 2</button><button onclick="refresh(0,2)"> 3</button><button onclick="refresh(1,0)"> 4</button><button onclick="refresh(1,1)"> 5</button><button onclick="refresh(1,2)"> 6</button>');
 
                 var margin = {top: 30, right: 20, bottom: 30, left: 50},
                     width = 600 - margin.left - margin.right,
@@ -41,9 +60,15 @@ path{
                 var yAxis = d3.svg.axis().scale(y)
                     .orient("left").ticks(5);
                 // Define the line
+                if(disease == 1){
+                    var priceline4 = d3.svg.line()
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.value); });
+                }
                 var priceline = d3.svg.line()
                     .x(function(d) { return x(d.date); })
                     .y(function(d) { return y(d.mc); });
+                
 
                     var priceline2 = d3.svg.line()
                     .x(function(d) { return x(d.date); })
@@ -54,6 +79,8 @@ path{
                     .y(function(d) { return y(d.sub); });
                     
                 // Adds the svg canvas
+
+
                 var svg = d3.select("body")
                     .append("svg")
                         .attr("width", width + margin.left + margin.right)
@@ -62,8 +89,10 @@ path{
                         .attr("transform", 
                               "translate(" + margin.left + "," + margin.top + ")");
                 // Get the data
-                d3.csv("Fast Food/Fastfood - 5 y.csv", function(error, data) {
+            if(disease == 0){    
+                d3.csv(filename, function(error, data) {
                     data.forEach(function(d) {
+                      console.log(d);
                     d.date = parseDate(d.date);
                     d.mc = +d.mc;
                     d.sub = +d.sub;
@@ -112,10 +141,50 @@ path{
                         .attr("class", "y axis")
                         .call(yAxis);
                 });
+            }else if(disease == 1){
+              d3.csv(filename, function(error, data) {
+                    data.forEach(function(d) {
+                      
+                    d.date = parseDate(d.date);
+                    d.mc = +d.value
+                    });
 
+                    console.log(data);
+                    // Scale the range of the data
+                    x.domain(d3.extent(data, function(d) { return d.date; }));
+                    y.domain([0, d3.max(data, function(d) { return d.value; })]); 
+                    // Nest the entries by symbol
+                    var dataNest = d3.nest()
+                        .key(function(d) {return d.symbol;})
+                        .entries(data);
+                    // Loop through each symbol / key
+                    dataNest.forEach(function(d) {
+                        svg.append("path")
+                            .attr("id","value")
+                            .attr("class", "line")
+                            .attr("d", priceline4(d.values))
+                            .attr('stroke','steelblue'); ; 
+                    });
+
+                    // Add the X Axis
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis);
+                    // Add the Y Axis
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis);
+                });
+            }
   }
 </script>
+<button onclick="refresh(0,0)"> 1</button>
+<button onclick="refresh(0,1)"> 2</button>
+<button onclick="refresh(0,2)"> 3</button>
+<button onclick="refresh(1,0)"> 4</button>
+<button onclick="refresh(1,1)"> 5</button>
+<button onclick="refresh(1,2)"> 6</button>
 
 
-<button onclick="refresh()"> Refresh</button>
 </body>
