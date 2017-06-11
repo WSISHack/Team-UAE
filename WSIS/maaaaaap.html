@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="dizzy,Sleepy,Sweaty,Snoring, Junk food">
+<script>
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+
+function myFunc() {
+    document.getElementById("myDropd").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body style ="background-image: url('assets/bg.jpg')"> 
+<H3>NCD</H3>
+<div class="dropdown">
+  <button onclick="myFunction()" class="dropbtn">Diseases</button>
+  <div id="myDropdown" class="dropdown-content">
+    <a href="#">Obesity</a>
+    <a href="#">Cancer</a>
+  </div>
+</div>
+<div class="dropdown">
+  <button onclick="myFunc()" class="dropbtn">Time Frame</button>
+  <div id="myDropd" class="dropdown-content">
+    <a href="#">Past 1 Month</a>
+    <a href="#">Past 2 Month</a>
+	<a href="#">Past 3 Month</a>
+  </div>
+</div>
+<tr>
+<td>Top Search Tags</td>
+<td><input type = "text" size = "16" id ="keywords" name = "key" placeholder="Keywords" required /></td>
+</tr>
+<header>
+</header>
+<footer class = "it">
+<h3>Copyright</h3>
+</footer>
+</body>
+</html>
