@@ -1,0 +1,426 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <style> /* set the CSS */
+  .parent {
+  position: relative;
+  top: 0;
+  left: 0;
+  text-align: center;
+  align: center;
+    width:50%;
+
+  margin-left: auto;
+}
+.image1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+   width:361px;
+  height:220px;
+  z-index: 4;
+  opacity: 0;
+}
+.image2 {
+  position: absolute;
+  width:361px;
+  height:220px;
+  top: 0px;
+  left: 0px;
+  z-index: 1;
+}
+
+#content{
+  height: 200%;
+}
+
+
+        path{ 
+            
+            stroke-width: 5;
+            fill: none;
+        }
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: grey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
+        </style>
+  <link rel="stylesheet" type="text/css" href="style/style.css" />
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <script>
+
+    var dis = 0;
+    var tf = 0;
+
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+
+function myFunc() {
+    document.getElementById("myDropd").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}
+</script>
+</head>
+
+<body style="background-color:white;">
+
+  <div id="main">
+  <div id="header"><p align="center"><img src="style/banner.jpg" width="1000px" height="193px" alt="NCD" title="NCD"></p>
+     
+      </div>
+
+   
+</div>
+        </ul>
+      </div>
+    </div>
+    <div id="content_header"></div>
+    <div id="site_content">
+     
+	  <div id="sidebar_container" >
+        <div class="sidebar" >
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <!-- insert your sidebar items here -->
+            
+             <h3>Diseases</h3>
+            <TD COLSPAN="7" CLASS="pldefault">
+			<SELECT NAME="sel_schd" onchange="refresh(this.value,tf)" SIZE="2" MULTIPLE ID="schd_id">
+			
+				<OPTION VALUE="0">Obesity</OPTION>
+				<OPTION VALUE="1">Cancer</OPTION>
+
+			</SELECT>
+			</TD>
+          </div>
+      <div class="sidebar_base" ></div>
+        </div>
+        <div class="sidebar">
+          <div class="sidebar_top"></div>
+          <div class="sidebar_item">
+            <h3>Time Frame</h3>
+			<TD COLSPAN="7" CLASS="pldefault">
+			<SELECT NAME="sel_schd" onchange="refresh(dis,this.value)" SIZE="3" MULTIPLE ID="schd_id">
+			
+				<OPTION VALUE="2">Past 3 Months</OPTION>
+				<OPTION VALUE="1">Past 1 Year</OPTION>
+				<OPTION VALUE="0">Past 5 Years</OPTION>
+
+			</SELECT>
+      
+			</TD>
+      
+          </div>
+          
+          <div class="sidebar_base"></div>
+                <img id="legend" src="legends.png" />
+
+        </div>
+      </div>
+	        <h1 style="text-align: center" > Search % </h1>
+          
+      <div id="content">
+        
+        <div id="graph">
+        <!-- insert the MAP here -->
+        <script>
+
+  function refresh(disease,TF){
+                // Set the dimensions of the canvas / graph
+
+                dis = disease;
+                tf = TF;
+
+                if(disease == 0){
+                  $("#background").css("opacity",0);
+                                          $("#giza").css("opacity",0);
+                        $("#cairo").css("opacity",0);
+                        $("#gharbia").css("opacity",0);
+                        $("#alexandria").css("opacity",0);
+                        $("#menofia").css("opacity",0);
+                        $("#dakahlia").css("opacity",0);
+                        $("#elbeheira").css("opacity",0);
+                        $("#asharqia").css("opacity",0);
+
+                }else{
+                  $("#background").css("opacity",1);
+
+                }
+
+                $("#graph").html("");
+
+                console.log(disease);
+                var filename = "";
+
+                if(disease == 0 && TF == 0){
+                  filename = "Fast Food/Fastfood - 5 y.csv";
+                }else if(disease == 0 && TF == 1){
+                  filename = "Fast Food/Fastfood - 1 y.csv";
+                }else if(disease == 0 && TF == 2){
+                  filename = "Fast Food/Fastfood - 3 m.csv";
+                }else if(disease == 1 && TF == 0){
+                  filename = "Cancer/Treatment of Cancer - 5 y.csv";
+                }else if(disease == 1 && TF == 1){
+                  filename = "Cancer/Treatment of Cancer - 1 y.csv";
+                }else if(disease == 1 && TF == 2){
+                  filename = "Cancer/Treatment of Cancer - 3 m.csv";
+                }
+
+
+
+                var margin = {top: 30, right: 20, bottom: 30, left: 50},
+                    width = 600 - margin.left - margin.right,
+                    height = 270 - margin.top - margin.bottom;
+                // Parse the date / time
+                var parseDate = d3.time.format('%Y-%m-%d').parse; 
+                // Set the ranges
+                var x = d3.time.scale().range([0, width]);
+                var y = d3.scale.linear().range([height, 0]);
+                // Define the axes
+                var xAxis = d3.svg.axis().scale(x)
+                    .orient("bottom").ticks(5);
+                var yAxis = d3.svg.axis().scale(y)
+                    .orient("left").ticks(5);
+                // Define the line
+                if(disease == 1){
+                    var priceline4 = d3.svg.line()
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.value); });
+                                                      $("#legend").css("opacity",0);
+
+                }else{
+                                  $("#legend").css("opacity",1);
+
+                }
+                var priceline = d3.svg.line()
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.mc); });
+                
+
+                    var priceline2 = d3.svg.line()
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.kfc); });
+
+                    var priceline3 = d3.svg.line()
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.sub); });
+                    
+                // Adds the svg canvas
+
+
+                var svg = d3.select("#graph")
+                    .append("svg")
+                        .attr("width", width + margin.left + margin.right)
+                        .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                        .attr("transform", 
+                              "translate(" + margin.left + "," + margin.top + ")");
+                // Get the data
+            if(disease == 0){    
+                d3.csv(filename, function(error, data) {
+                    data.forEach(function(d) {
+                      console.log(d);
+                    d.date = parseDate(d.date);
+                    d.mc = +d.mc;
+                    d.sub = +d.sub;
+                    d.kfc = +d.kfc;
+                    });
+
+                    console.log(data);
+                    // Scale the range of the data
+                    x.domain(d3.extent(data, function(d) { return d.date; }));
+                    y.domain([0, d3.max(data, function(d) { return d.mc; })]); 
+                    // Nest the entries by symbol
+                    var dataNest = d3.nest()
+                        .key(function(d) {return d.symbol;})
+                        .entries(data);
+                    // Loop through each symbol / key
+                    dataNest.forEach(function(d) {
+                        svg.append("path")
+                            .attr("id","mc")
+                            .attr("class", "line")
+                            .attr("d", priceline(d.values))
+                            .attr('stroke','yellow'); ; 
+                    });
+
+                    dataNest.forEach(function(d) {
+                        svg.append("path")
+                            .attr("id","kfc")
+                            .attr("class", "line")
+                            .attr("d", priceline2(d.values))
+                            .attr('stroke','red'); 
+                    });
+
+                    dataNest.forEach(function(d) {
+                        svg.append("path")
+                            .attr("id","sub")
+                            .attr("class", "line")
+                            .attr("d", priceline3(d.values))
+                            .attr('stroke','green'); 
+                    });
+                    // Add the X Axis
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis);
+                    // Add the Y Axis
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis);
+                });
+            }else if(disease == 1){
+              d3.csv(filename, function(error, data) {
+                    data.forEach(function(d) {
+                      
+                    d.date = parseDate(d.date);
+                    d.mc = +d.value
+                    });
+
+                    console.log(data);
+                    // Scale the range of the data
+                    x.domain(d3.extent(data, function(d) { return d.date; }));
+                    y.domain([0, d3.max(data, function(d) { return d.value; })]); 
+                    // Nest the entries by symbol
+                    var dataNest = d3.nest()
+                        .key(function(d) {return d.symbol;})
+                        .entries(data);
+                    // Loop through each symbol / key
+                    dataNest.forEach(function(d) {
+                        svg.append("path")
+                            .attr("id","value")
+                            .attr("class", "line")
+                            .attr("d", priceline4(d.values))
+                            .attr('stroke','steelblue'); ; 
+                    });
+
+                    // Add the X Axis
+                    svg.append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + height + ")")
+                        .call(xAxis);
+                    // Add the Y Axis
+                    svg.append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis);
+                });
+            }
+      if(disease == 1){
+
+
+            if(tf == 0){
+                filename = "Cancer/reg-Treatment of Cancer - 5 y.csv";
+            }else if(tf == 1){
+                filename = "Cancer/reg-Treatment of Cancer - 1 y.csv";
+            }else if(tf == 2){
+                filename = "Cancer/reg-Treatment of Cancer - 3 m.csv";
+            }
+
+            d3.csv(filename, function(error, data) {
+                    data.forEach(function(d) {
+
+                         console.log(d);
+                      if(d.Region == "Gharbia Governorate"){
+
+                          
+                        $("#gharbia").css("opacity",d.Value /100.0);
+                      }else if(d.Region == "Giza Governorate"){
+                        $("#giza").css("opacity",d.Value /100.0);
+
+                      }else if(d.Region == "Cairo Governorate"){
+                        $("#cairo").css("opacity",d.Value /100.0);
+
+                      }else if(d.Region == "Monufia Governorate"){
+                        $("#menofia").css("opacity",d.Value /100.0);
+
+                      }else if(d.Region == "El Beheira Governorate"){
+                        $("#elbeheira").css("opacity",d.Value /100.0);
+
+                      }else if(d.Region == "Alexandria Governorate"){
+                        $("#alexandria").css("opacity",d.Value /100.0);
+
+                      }else if(d.Region == "Qalyubia Governorate"){
+                        $("#alqalyubia").css("opacity",d.Value /100.0);
+
+                      }else if(d.Region == "Dakahlia Governorate"){
+                        $("#dakahlia").css("opacity",d.Value /100.0);
+
+                      }else if(d.Region == "Ash Sharqia Governorate"){
+                        $("#asharqia").css("opacity",d.Value /100.0);
+
+                      }
+                    }
+                    );
+          });
+    }
+  }
+refresh(1,0);
+
+</script>
+
+      </div>
+
+
+      </div>
+      
+    </div>
+      
+    </div>
+  </div>
+  <div class="parent">
+  <img class="image2" id="background" src="./Images/Background.png" />
+  <img id="cairo" class="image1" src="./Images/Cairo.png" />
+    <img id="gharbia" class="image1" src="./Images/Gharbia.png" />
+
+  <img id="giza" class="image1" src="./Images/Giza.png" />
+
+  <img id="alexandria" class="image1" src="./Images/Alexandria.png" />
+
+  <img id="menofia" class="image1" src="./Images/Menofia.png" />
+
+  <img id="dakahlia" class="image1" src="./Images/Dakahlia.png" />
+  <img id="elbeheira" class="image1" src="./Images/ElBeheira.png" />
+  <img id="asharqia" class="image1" src="./Images/Asharqia.png" />
+    <img id="alqalyubia" class="image1" src="./Images/AlQalyubia.png" />
+
+
+
+
+</div>
+</body>
+</html>
